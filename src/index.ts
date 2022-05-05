@@ -27,19 +27,19 @@ const translateEnToJP = async (text: string): Promise<string> => {
   return json.translations[0].text;
 };
 
+
 client.on("ready", () => {
   console.log(`Logged in as ${client.user?.tag}`);
 });
 
+
 client.on("messageCreate", async (message) => {
 
-  // 翻訳対象のチャンネルIDを検出
-  if (message.channelId !== "971771804282654783") {
+  if (message.channelId !== process.env.TARGET_CHANNEL_ID) {
     return;
   }
 
-  // 結果を専用チャンネルへ送信
-  const channel = client.channels.cache.get("971780283978371114");
+  const channel = client.channels.cache.get(process.env.RESULT_CHANNEL_ID!);
 
   if (channel === undefined) {
     console.log("対象のチャンネル名が見つかりませんでした");
@@ -51,5 +51,6 @@ client.on("messageCreate", async (message) => {
 
   }
 });
+
 
 client.login(process.env.TOKEN);

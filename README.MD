@@ -1,4 +1,8 @@
 # .env
-A
-B
-TOKEN
+
+```
+TOKEN=
+DEEPL=
+TARGET_CHANNEL_ID=
+RESULT_CHANNEL_ID=
+```
