@@ -1,0 +1,4 @@
+# .env
+A
+B
+TOKEN

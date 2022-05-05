@@ -1,0 +1,13 @@
+{
+  "type": "module",
+  "name": "discord_auto_translate",
+  "version": "1.0.0",
+  "main": "./src/index.js",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "node-fetch": "^3.2.4",
+    "typescript": "^4.6.4"
+  }
+}
