@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { Client, Intents } from "discord.js";
+import { Client, Intents, MessageEmbed } from "discord.js";
 import dotenv from "dotenv";
 import fetch from "node-fetch";
 dotenv.config();
@@ -27,10 +27,8 @@ const LangEnum = {
  */
 const translateEnToJP = (text) => __awaiter(void 0, void 0, void 0, function* () {
     const url = `https://api-free.deepl.com/v2/translate?auth_key=${process.env.DEEPL}&text=${text}&target_lang=${LangEnum.jp}`;
-    console.log(url);
     const res = yield fetch(url);
     const json = yield res.json();
-    console.log(json);
     return json.translations[0].text;
 });
 client.on("ready", () => {
@@ -38,18 +36,19 @@ client.on("ready", () => {
     console.log(`Logged in as ${(_a = client.user) === null || _a === void 0 ? void 0 : _a.tag}`);
 });
 client.on("messageCreate", (message) => __awaiter(void 0, void 0, void 0, function* () {
-    // 翻訳対象のチャンネルIDを検出
-    if (message.channelId !== "971771804282654783") {
+    if (message.channelId !== process.env.TARGET_CHANNEL_ID) {
         return;
     }
-    // 結果を専用チャンネルへ送信
-    const channel = client.channels.cache.get("971780283978371114");
+    const channel = client.channels.cache.get(process.env.RESULT_CHANNEL_ID);
     if (channel === undefined) {
         console.log("対象のチャンネル名が見つかりませんでした");
     }
     else {
-        const to = yield translateEnToJP(message.content);
-        channel.send(`${message.content}\n-------------\n${to}`);
+        const translated = yield translateEnToJP(message.content);
+        const embed = new MessageEmbed()
+            .setAuthor({ name: message.author.username, iconURL: message.author.avatarURL() })
+            .setFields({ name: translated, value: message.content });
+        channel.send({ embeds: [embed] });
     }
 }));
 client.login(process.env.TOKEN);

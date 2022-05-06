@@ -1,4 +1,4 @@
-import { Client, Intents } from "discord.js";
+import { Client, Intents, TextChannel, MessageEmbed } from "discord.js";
 import dotenv from "dotenv";
 import fetch from "node-fetch";
 dotenv.config();
@@ -23,7 +23,6 @@ const translateEnToJP = async (text: string): Promise<string> => {
   const url = `https://api-free.deepl.com/v2/translate?auth_key=${process.env.DEEPL}&text=${text}&target_lang=${LangEnum.jp}`;
   const res = await fetch(url);
   const json = await res.json() as any;
-  console.log(json);
   return json.translations[0].text;
 };
 
@@ -46,8 +45,12 @@ client.on("messageCreate", async (message) => {
 
   } else {
 
-    const to = await translateEnToJP(message.content);
-    (channel as any).send(`${message.content}\n-------------\n${to}`);
+    const translated = await translateEnToJP(message.content);
+    const embed = new MessageEmbed()
+      .setAuthor({ name: message.author.username, iconURL: message.author.avatarURL()! })
+      .setFields({ name: translated, value: message.content });
+
+    (channel as TextChannel).send({ embeds: [embed] });
 
   }
 });
